@@ -25,6 +25,18 @@ rotation = cameraParams.RotationMatrices;
 translation = cameraParams.TranslationVectors;
 save('calib_result.mat', 'rotation', 'translation')
 save('imageFileNames.mat', 'imageFileNames')
+focal_length = cameraParams.Intrinsics.FocalLength
+principal_point = cameraParams.Intrinsics.PrincipalPoint
+image_size = cameraParams.Intrinsics.ImageSize
+radial_distortion  = cameraParams.Intrinsics.RadialDistortion
+tangential_distortion = cameraParams.Intrinsics.TangentialDistortion
+skew = cameraParams.Intrinsics.Skew
+K = cameraParams.Intrinsics.K
+save('camera_params.mat', 'focal_length', "principal_point", ...
+    "image_size", "radial_distortion", "tangential_distortion", "skew", "K")
+square_size = squareSize
+board_dim = detector.BoardSize
+save('board_params.mat', 'board_dim', 'square_size')
 ```
 
 8. Run pose saving script which saves ```effector2world_transform.txt``` and ```object2cam_trasnform.txt``` in the form of: **x,y,z,qx,qy,qz,qw**:
@@ -99,6 +111,11 @@ effector_camera:
     y: 0.4959403836156112
     z: 0.4977879383736763
     w: 0.4929479091874179
+```
+
+17. To check the validity and quality of the calibration, you can reproject detected corners on another image used during the calibration:
+```
+python scripts/reproject_calibration_results.py -d data/sample_data
 ```
 
 # Using VISP on Docker
