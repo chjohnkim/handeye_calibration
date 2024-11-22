@@ -2,11 +2,11 @@ from geometry_msgs.msg import Transform
 import rospy
 import os
 import csv
+import argparse
 
 class TransformPublisher():
-    def __init__(self, data_root_dir, bag_dir):
-        self.data_root_dir = data_root_dir
-        self.bag_dir = bag_dir
+    def __init__(self, data_dir):
+        self.data_dir = data_dir
 
         rospy.init_node('transform_publisher', anonymous=True)
         self.world_effector_pub = rospy.Publisher('world_effector', Transform, queue_size=10)
@@ -16,11 +16,11 @@ class TransformPublisher():
         self.world_effector_ls = []
         self.camera_object_ls = []
             
-        with open(os.path.join(self.data_root_dir, self.bag_dir, 'effector2world_transform.txt')) as file:
+        with open(os.path.join(self.data_dir, 'effector2world_transform.txt')) as file:
             csvreader = csv.reader(file)
             for row in csvreader:
                 self.world_effector_ls.append(row)
-        with open(os.path.join(self.data_root_dir, self.bag_dir, 'object2cam_transform.txt')) as file:
+        with open(os.path.join(self.data_dir, 'object2cam_transform.txt')) as file:
             csvreader = csv.reader(file)
             for row in csvreader:
                 self.camera_object_ls.append(row)
@@ -51,4 +51,14 @@ class TransformPublisher():
             self.camera_object_pub.publish(camera_object_tf)
             print('*'*i, i)
             self.rate.sleep()
-        
+
+
+def parse_args():
+    return args
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Extract data from bag file')
+    parser.add_argument('-d', '--data_dir', required=True, type=str, help='path of data directory')
+    args = parser.parse_args()
+    be = TransformPublisher(args.data_dir)

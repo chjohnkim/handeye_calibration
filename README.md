@@ -1,9 +1,5 @@
 # Calibration process
 
-[comment]: <> (1. If bag file is named **hello_world.bag**, place bag file in **handeye_calibration/data/hello_world/hello_world.bag**)
-[comment]: <> (2. Run bag extraction script:)
-[comment]: <> (python extract_bag.py -d data -b hello_world -s 2 -r 20)
-
 1. Collect pairs of images of checkerboard and robot poses. Robot poses should be saved as text file in the form of: **x,y,z,qx,qy,qz,qw**
 
 2. Open MATLAB and run ```cameraCalibrator```
@@ -24,23 +20,24 @@ rotation = cameraParams.RotationMatrices;
 translation = cameraParams.TranslationVectors;
 save('calib_result.mat', 'rotation', 'translation')
 ```
+TODO: Get the image order from the script and export that as well, so we can read it from the pose_pair_saver.py
 
 5. Run pose saving script which saves end-effector2world and object2camera poses to text file in the form of: **x,y,z,qx,qy,qz,qw**
 ```
-python save_poses.py -d data -b hello_world
+python scripts/save_poses.py -d data/sample_data
 ```
 
-5. Run handeye_calibration ROS package (http://wiki.ros.org/visp_hand2eye_calibration)
+6. Run handeye_calibration ROS package (http://wiki.ros.org/visp_hand2eye_calibration)
 ```
 rosrun visp_hand2eye_calibration visp_hand2eye_calibration_calibrator
 ```
 
-6. Publish saved poses:
+7. Publish saved poses:
 ```
-python publish_poses.py -d data -b hello_world
+python scripts/transform_publisher.py -d data/sample_data
 ```
 
-7. Compute handeye transformation matrix by calling service:
+8. Compute handeye transformation matrix by calling service:
 ```
 rosservice call /compute_effector_camera
 ```
