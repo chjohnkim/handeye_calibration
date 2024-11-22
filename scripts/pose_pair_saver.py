@@ -4,7 +4,6 @@ import scipy.io
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 import argparse
-import glob
 
 class PosePairSaver():
     def __init__(self, data_dir):
@@ -14,28 +13,21 @@ class PosePairSaver():
         self.check_and_save()
 
     def effector2world(self):
-        # In self.data_dir, read {}_robot_pose.txt
-        pattern = os.path.join(self.data_dir, "*_robot_pose.txt")
-        files = glob.glob(pattern)
-        
-        # Filter and sort the files
-        # TODO: Read this from another matlab output and order it based on that, instead of reading all files.
-        robot_pose_files = []
-        for file in files:
-            basename = os.path.basename(file)
-            if basename.split('_')[0].isdigit():
-                robot_pose_files.append(file)
-        robot_pose_files = sorted(robot_pose_files, key=lambda x: int(os.path.basename(x).split('_')[0]))
+        image_file_names = scipy.io.loadmat(os.path.join(self.data_dir, 'imageFileNames'))['imageFileNames'][0] 
+        image_order_idx = []
+        for f_name in image_file_names:
+            image_order_idx.append(int(f_name[0].split('/')[-1].split('.')[0]))
 
         robot_poses = []
-        for file in robot_pose_files:
-            with open(file, 'r') as f:
+        for img_idx in image_order_idx:
+            img_path = os.path.join(self.data_dir, f'{img_idx}_robot_pose.txt')
+            with open(img_path, 'r') as f:
                 content = f.read().strip()
                 digits = content.split(',')
                 if len(digits) == 7:
                     robot_poses.append([float(digit) for digit in digits])
                 else:
-                    print(f"Warning: File {file} does not contain exactly 7 comma-delimited values.")
+                    print(f"Warning: File {img_path} does not contain exactly 7 comma-delimited values.")
         self.effector2world_transform = np.array(robot_poses)
 
     def object2cam(self):

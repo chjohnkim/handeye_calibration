@@ -10,6 +10,7 @@ from sensor_msgs.msg import CameraInfo, Image
 from cv_bridge import CvBridge
 import cv2
 import tf
+import argparse
 
 class BagExtractor():
     def __init__(self, data_root_dir, bag_dir, world_frame, eef_frame, image_topic, camera_info_topic, save_every=1, rate=1):
@@ -143,6 +144,17 @@ class BagExtractor():
     
 
 if __name__ == '__main__':
-    data_root_dir='data/bag'
-    bag_file_name = 'johnfranka.bag'
-    be = BagExtractor(data_root_dir, bag_file_name, save_every=10, rate=1)
+    parser = argparse.ArgumentParser(description='Extract data from bag file')
+    parser.add_argument('-d', '--data_root_dir', required=True, type=str, help='path of data root directory')
+    parser.add_argument('-b', '--bag_name', required=True, type=str, help='name of bag file without extension')
+    parser.add_argument('-s', '--save_every', type=int, default=10, help='down sample extracted data')
+    parser.add_argument('-r', '--bag_rate', type=int, default=1, help='bag play speed rate')
+    args = parser.parse_args()
+
+    world_frame = '/world'
+    eef_frame = '/wrist_3_link'
+    image_topic = '/theia/left/image_raw'
+    camera_info_topic = '/theia/left/camera_info'
+    be = BagExtractor(args.data_root_dir, args.bag_name, 
+                    world_frame, eef_frame, image_topic, camera_info_topic, 
+                    save_every=args.save_every, rate=args.bag_rate)

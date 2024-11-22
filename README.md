@@ -19,6 +19,7 @@ save('imagePoints.mat', 'imagePoints')
 rotation = cameraParams.RotationMatrices;
 translation = cameraParams.TranslationVectors;
 save('calib_result.mat', 'rotation', 'translation')
+save('imageFileNames.mat', 'imageFileNames')
 ```
 TODO: Get the image order from the script and export that as well, so we can read it from the pose_pair_saver.py
 
