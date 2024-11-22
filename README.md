@@ -96,7 +96,7 @@ python3 scripts/transform_publisher.py -d data/sample_data
 
 16. Again from the third container, compute handeye transformation matrix by calling service:
 ```
-rosservice call /compute_effector_camera
+rosservice call /compute_effector_camera > /handeye_calibration/data/sample_data/hand2eye_transform.yaml
 ```
 This should return you a transformation which is the pose of the camera with respect to the end-effector.
 E.g.:

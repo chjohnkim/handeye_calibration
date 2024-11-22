@@ -5,7 +5,7 @@ from scipy.spatial.transform import Rotation as R
 import cv2
 import matplotlib.pyplot as plt
 import argparse
-
+import yaml
 
 class ReprojectHand2Eye:
     def __init__(self, data_dir):
@@ -29,10 +29,19 @@ class ReprojectHand2Eye:
         self.square_size = board_params['square_size'].item()/1000.0
 
     def load_hand2eye_transformation(self):
-        # TODO: Load this from somewhere
         # Camera pose from end-effector frame
-        camera_translation = np.array([[0.337760678839, -0.46480742266, 0.0250792296204]])
-        camera_rotation = R.from_quat([-0.513693426639, 0.496370265856, 0.49749117207, 0.492176956302])
+        yaml_path = os.path.join(self.data_dir, 'hand2eye_transform.yaml')
+        with open(yaml_path, 'r') as file:
+            data = yaml.safe_load(file)
+        x = data['effector_camera']['translation']['x']
+        y = data['effector_camera']['translation']['y']
+        z = data['effector_camera']['translation']['z']
+        qx = data['effector_camera']['rotation']['x']
+        qy = data['effector_camera']['rotation']['y']
+        qz = data['effector_camera']['rotation']['z']
+        qw = data['effector_camera']['rotation']['w']
+        camera_translation = np.array([[x, y, z]])
+        camera_rotation = R.from_quat([qx, qy, qz, qw])
         T_camera_effector = np.eye(4)
         T_camera_effector[:3,3] = camera_translation
         T_camera_effector[:3,:3] = camera_rotation.as_matrix()
