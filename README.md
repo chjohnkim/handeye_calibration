@@ -1,8 +1,33 @@
+# Dependencies
+### Tested on Ubuntu 22.04
+- MATLAB
+- Docker
+- Python libraries:
+  - numpy
+  - scipy
+  - cv2
+  - matplotlib
+- Robot/Camera specific Python libraries:
+  - pynput
+  - ur_rtde
+  - pyrealsense2
+  - imageio
+
 # Step by Step Calibration Process
 
 1. Collect pairs of images of checkerboard and robot poses. Place them in a data folder, (e.g. ```handeye_calibration/data/sample_data```) 
     - Images should be saved as ```{}.jpg``` where ```{}``` increments by 1. (E.g. ```0.jpg```, ```1.jpg```, ...)
     - Robot poses should be saved as ```{}_robot_pose.txt``` with corresponding index as the iamge. The poses should be comma delimited in the form of: **x,y,z,qx,qy,qz,qw**
+
+An example of collecting raw data with a UR5 robot arm and a realsense camera is provided in the ```examples``` folder:
+```
+python examples/collect_raw_data.py -o data/sample_data -h 192.168.1.10 -r 750612070558
+```
+Once the robot and camera has been loaded correctly, a live camera feed will pop up. You can give keyboard inputs to control the robot and capture datapoints:
+- ```c```: Captures image and robot tcp pose; saves it in the output directory in the format described above
+- ```f```: Activates freedrive mode of the robot to change pose
+- ```s```: Deactivates freedrive mode
+- ```q```: Terminate script
 
 2. Open MATLAB and run:
 ```

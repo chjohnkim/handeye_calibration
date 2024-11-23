@@ -10,8 +10,9 @@ from scipy.spatial.transform import Rotation as R
 
 @click.command()
 @click.option('-o', '--output_dir', type=str, required=True)
-@click.option('-h', '--hostname', type=str, default='127.0.0.1')
-def main(output_dir, hostname):
+@click.option('-h', '--hostname', type=str, default='192.168.1.10')
+@click.option('-r', '--realsense_id', type=str, default='750612070558')
+def main(output_dir, hostname, realsense_id):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
         print(f"Directory '{output_dir}' created.")
@@ -20,7 +21,7 @@ def main(output_dir, hostname):
 
     data_count = 0
 
-    with Camera('750612070558') as camera, KeyboardHandler() as keyboard_listener, Robot('192.168.1.10') as robot:
+    with Camera(realsense_id) as camera, KeyboardHandler() as keyboard_listener, Robot(hostname) as robot:
         # Start the camera stream in a separate thread
         stream_thread = threading.Thread(target=camera.stream, daemon=True)
         stream_thread.start()
