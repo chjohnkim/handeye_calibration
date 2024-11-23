@@ -2,12 +2,6 @@ import cv2
 
 class LaptopCamera:
     def __init__(self):
-        self.id = id
-
-        self.fps = 30
-        self.width = 640
-        self.height = 480
-        
         # Start streaming 
         self.camera = cv2.VideoCapture(0)  # Use 0 for the default camera. For external cameras, use 1 or the appropriate index.
         # Check if the camera opened successfully
@@ -32,7 +26,6 @@ class LaptopCamera:
                 break
 
         # Release the camera and close windows
-        self.close()
         cv2.destroyAllWindows()
 
     def snapshot(self):

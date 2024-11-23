@@ -5,6 +5,7 @@ import numpy as np
 import click
 import os
 import cv2
+import threading
 
 @click.command()
 @click.option('-o', '--output_dir', type=str, required=True)
@@ -19,8 +20,10 @@ def main(output_dir, hostname):
     data_count = 0
 
     with Camera() as camera, KeyboardHandler() as keyboard_listener:  # Add Robot(hostname) if applicable
+        # Start the camera stream in a separate thread
+        stream_thread = threading.Thread(target=camera.stream, daemon=True)
+        stream_thread.start()
         print("Press 'c' to capture a snapshot or 'q' to quit.")
-        
         while True:
             if keyboard_listener.action == 'capture':
                 # Handle capturing a snapshot
@@ -48,8 +51,8 @@ def main(output_dir, hostname):
             elif keyboard_listener.action == 'quit':
                 print("Exiting...")
                 break
-
             # Other loop operations, e.g., robot control, monitoring, etc.
+        stream_thread.join()
 
 if __name__ == "__main__":
     main()
