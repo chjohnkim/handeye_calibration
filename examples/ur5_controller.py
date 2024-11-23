@@ -46,6 +46,12 @@ class URControl:
         """
         self.rtde_c.moveL(pose, speed, acceleration, asynchronous)
 
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_value, traceback):
+        if exc_type:
+            print(f"An exception occurred: {exc_value}")
 
 
 # First argument is the pose 6d vector followed by speed and acceleration
@@ -59,3 +65,4 @@ class URControl:
 #rtde_r = rtde_receive.RTDEReceiveInterface("192.168.1.10")
 #actual_q = rtde_r.getActualQ()
 #actual_pose = rtde_r.getActualTCPPose()
+#print(actual_q)
